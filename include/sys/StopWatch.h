@@ -22,7 +22,6 @@
 
 namespace sys
 {
-
     class StopWatch
     {
     public:
@@ -48,6 +47,7 @@ namespace sys
         int64_t elapsed() const;
         
     private:
+        /* Forbid copy */
         StopWatch& operator=(const StopWatch& other);
         StopWatch(const StopWatch& other);
         

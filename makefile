@@ -14,8 +14,7 @@ CFLAGS = -g -Wall -std=c++11 $(INCPARAMS) $(OPTFLAGS)
 LFLAGS = -Wall -L$(OUTDIR)/
 RUNARGS = 
 
-SRCS = src/app/SimpleApp.cpp src/app/AppContext.cpp src/sys/AbstractThread.cpp 
-SRCS +=src/sys/StopWatch.cpp
+SRCS = src/app/SimpleApp.cpp src/app/AppContext.cpp src/sys/AbstractThread.cpp src/sys/StopWatch.cpp
 
 EXAMPLE_SRCS = example/main.cpp 
 
@@ -47,7 +46,7 @@ clean:
 	rm -f $(EXAMPLE_OUTDIR)/$(EXAMPLE_TARGET)
 	
 # Example code
-$(EXAMPLE_TARGET): main.o $(OBJS)
+$(EXAMPLE_TARGET): main.o $(OBJS) $(TARGET)
 	@mkdir -p $(EXAMPLE_OUTDIR)
 	$(CC) $< $(LFLAGS) $(LIBS) -o $(EXAMPLE_OUTDIR)/$@ -pthread $(OPTFLAGS)
 

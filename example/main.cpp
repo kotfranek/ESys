@@ -1,5 +1,7 @@
 #include "app/SimpleApp.h"
 #include "sys/AbstractThread.h"
+#include "sys/StopWatch.h"
+
 #include <iostream>
 
 namespace
@@ -49,6 +51,8 @@ public:
 private:    
     virtual int32_t onRun( const TStringVector& args )
     {       
+        ::sys::StopWatch stW( true );
+        
         const size_t NUM_TH = 26U;
         
         Th1* threads[ NUM_TH ];
@@ -68,6 +72,8 @@ private:
             
             delete threads[ i ];
         }
+        
+        ::std::cout << "Took: " << stW.stop() << " us" << ::std::endl;
         
         return 0;
     }
