@@ -14,7 +14,8 @@ CFLAGS = -g -Wall -std=c++11 $(INCPARAMS) $(OPTFLAGS)
 LFLAGS = -Wall -L$(OUTDIR)/
 RUNARGS = 
 
-SRCS = src/app/SimpleApp.cpp src/app/AppContext.cpp src/sys/AbstractThread.cpp src/sys/StopWatch.cpp
+SRCS = src/app/SimpleApp.cpp src/app/AppContext.cpp src/sys/AbstractThread.cpp src/sys/StopWatch.cpp 
+SRCS+= src/net/UdpSocket.cpp src/net/Datagram.cpp src/net/Address.cpp
 
 EXAMPLE_SRCS = example/main.cpp 
 
