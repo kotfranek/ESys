@@ -23,55 +23,18 @@
  *
  */
 
-#ifndef APPCONTEXT_H
-#define APPCONTEXT_H
+#ifndef SYS_TYPES_H__
+#define SYS_TYPES_H__
 
 #include <mutex>
-#include <condition_variable>
 
-namespace app
+namespace sys
 {
-    class SimpleApp;
+    /* Mutex Lock Guard */
+    typedef ::std::lock_guard<std::mutex> TLockMutex;
+    
+    /* Mutex Lock Guard (Unique) */
+    typedef ::std::unique_lock<std::mutex> TLockUnique;    
+};
 
-    class AppContext
-    {
-    public:
-        static AppContext& instance();
-        
-        
-        AppContext();
-        
-        
-        bool registerApp( SimpleApp* app );
-        
-        
-        /**
-        * Wait for exit signal with the given timeout
-        * @arg timeout Time in ms
-        * @return true on signal, false on timeout
-        */
-        bool waitForExit( const uint32_t timeout = 0U );
-        
-        
-    private:
-        static void signalHandler( const int32_t signal );        
-        
-        
-        void onSignal( const int32_t signal );
-        
-        /* Access protection */
-        ::std::mutex m_mutex;
-        
-        
-        /* Application Exit condition */
-        ::std::condition_variable m_condExit;
-        
-        /* Set when exit requested via a SIGTERM */
-        bool m_flagExit;
-        
-        /* Instance - Can be only single App in process */
-        SimpleApp* m_instance;
-    };
-
-}; // namespace app
-#endif // APPCONTEXT_H
+#endif // SYS_TYPES_H

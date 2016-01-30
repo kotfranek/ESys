@@ -30,7 +30,7 @@ namespace net
 
 Datagram::Datagram( const Address& addr )
     : m_address( addr )
-    , m_data()
+    , m_payload()
 {
 }
 
@@ -42,10 +42,23 @@ void Datagram::setAddress( const Address& addr )
 
 
 
-void Datagram::setData( const void* from, const size_t bytes )
+void Datagram::setContent( const void* from, const size_t bytes )
 {
-    m_data.copyFrom( reinterpret_cast< const uint8_t* >( from ), bytes );
+    m_payload.copyFrom( reinterpret_cast< const uint8_t* >( from ), bytes );
 }
+
+
+void Datagram::setContent( const std::string& text )
+{
+    setContent( text.c_str(), text.size() );
+}
+
+
+void Datagram::toString( std::string& text ) const
+{
+    text.assign( reinterpret_cast< std::string::const_pointer >( m_payload.begin() ), m_payload.size() );
+}
+
 
 
 }; // namespace net

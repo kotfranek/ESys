@@ -71,6 +71,4 @@ void Address::fromSockAddr( const sockaddr_in& addr )
 }
 
 
-
-
 }; // namespace net

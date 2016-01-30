@@ -49,7 +49,7 @@ namespace sys
             copyFrom( other.m_data, other.m_size );
         }
         
-        T* begin()
+        const T* begin() const
         {
             return m_data;
         }

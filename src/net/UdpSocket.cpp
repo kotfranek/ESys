@@ -40,10 +40,32 @@ namespace
     /* Invalid Socket Id */
     const int32_t SOCKET_INVALID = -1; 
     
+    /* Socket Reusability */
+    const int32_t OPT_REUSE_VALUE = 1;
+    
+    
+    /* Test the socket validity */
+    inline bool isSocketValid( const int32_t socket )
+    {
+        return socket != SOCKET_INVALID;
+    }
+    
     
     template<typename T> void zeroMem( T& object )
     {
         ::memset( &object, 0, sizeof( T ) );
+    }
+    
+    /**
+     * Set the Socket option
+     * @arg socketId
+     * @arg optionName
+     * @arg option
+     * @result true on success
+     */
+    template<typename T> bool setSocketOption( const int32_t socketId, const int32_t optionName, const T& option )
+    {
+        return -1 != setsockopt( socketId, SOL_SOCKET, optionName, &option, sizeof( T ) );
     }
         
 }
@@ -53,6 +75,7 @@ namespace net
 
 UdpSocket::UdpSocket()
     : m_socket()
+    , m_connected( false )
 {
 
 }
@@ -63,7 +86,7 @@ bool UdpSocket::open( const uint16_t port )
     bool result = false;
     const int32_t socketId = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP );
     
-    if ( ::SOCKET_INVALID != socketId )
+    if ( ::isSocketValid( socketId ) )
     {
         m_socket = socketId;
                 
@@ -73,9 +96,8 @@ bool UdpSocket::open( const uint16_t port )
         if ( -1 != ::bind( m_socket, ( struct sockaddr * ) &addrOwn, sizeof( addrOwn ) ) )
         {
             ::std::cout << "BIND" << ::std::endl;
-            result = true;
-            int optval = 1;
-            setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof optval);
+
+            result = ::setSocketOption( m_socket, SO_REUSEADDR, OPT_REUSE_VALUE );
         }
         else
         {
@@ -92,21 +114,36 @@ bool UdpSocket::send( const Datagram& datagram )
 {
     bool result = false;
     
-    if ( ::SOCKET_INVALID != m_socket )
+    if ( ::isSocketValid( m_socket ) )
     {    
-        struct sockaddr_in addrTo;
+        const TDataGramBuffer& db = datagram.getData();        
         
-        datagram.getAddress().toSockAddr( addrTo );
-        
-        if ( -1 != sendto( m_socket, "BA", 2, 0, ( struct sockaddr * )&addrTo, sizeof( addrTo )) )
+        if ( m_connected )
         {
-            ::std::cout << "SENT" << ::std::endl;
-            result = true;
+            if ( -1 != ::send( m_socket, db.begin(), db.size(), 0 ) )
+            {
+                
+            }
+            else
+            {
+                m_connected = false;
+            }
         }
         else
         {
-            ::std::cout << strerror(errno) << ::std::endl;
-        }    
+            struct sockaddr_in addrTo;
+            
+            datagram.getAddress().toSockAddr( addrTo );
+            
+            if ( -1 != sendto( m_socket, db.begin(), db.size(), 0, ( struct sockaddr * )&addrTo, sizeof( addrTo )) )
+            {
+                result = true;
+            }
+            else
+            {
+                ::std::cout << strerror(errno) << ::std::endl;
+            }                
+        }
     }
     
     return result;
@@ -115,23 +152,37 @@ bool UdpSocket::send( const Datagram& datagram )
 
 void UdpSocket::setTimeouts( const uint32_t sndTimeout, const uint32_t recvTimeout )
 {
-    if ( ::SOCKET_INVALID != m_socket )
+    if ( ::isSocketValid( m_socket ) )
     {
         struct timeval timeout;
         timeout.tv_sec = recvTimeout / 1000U;
-        timeout.tv_usec = ( recvTimeout % 1000U ) * 1000;
-        if ( -1 == ::setsockopt( m_socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof( timeout ) ) )
-        {
-            ::std::cout << strerror(errno) << ::std::endl;            
-        }
+        timeout.tv_usec = ( recvTimeout % 1000U ) * 1000;        
+        ::setSocketOption( m_socket, SO_RCVTIMEO, timeout );
+        
         timeout.tv_sec = sndTimeout / 1000U;
         timeout.tv_usec = ( sndTimeout % 1000U ) * 1000;
-        if ( -1 == ::setsockopt( m_socket, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof( timeout ) ) )
-        {
-            ::std::cout << strerror(errno) << ::std::endl;            
-        }        
+        ::setSocketOption( m_socket, SO_SNDTIMEO, timeout );     
     }
 }
+
+
+bool UdpSocket::connect( const Address& addr )
+{
+    if ( ::isSocketValid( m_socket ) )
+    {
+        struct sockaddr_in addrTo;
+        
+        addr.toSockAddr( addrTo );
+        
+        if ( -1 != ::connect( m_socket, ( struct sockaddr * ) &addrTo, sizeof( addrTo ) ) )
+        {
+            m_connected = true;            
+        }
+    }
+    
+    return m_connected;
+}
+
 
 
 
@@ -139,15 +190,13 @@ bool UdpSocket::receive( Datagram& datagram )
 {
     bool result = false;    
     
-    if ( ::SOCKET_INVALID != m_socket )
+    if ( ::isSocketValid( m_socket ) )
     {           
         struct sockaddr_in addrFrom;
         socklen_t slen = sizeof( addrFrom );
         ::zeroMem( addrFrom );
         
         uint8_t buffer[ ::net::TDataGramBuffer::CAPACITY ];
-        
-        ::std::cout << "waiting..." << ::std::endl;
                
         const ssize_t count = recvfrom( m_socket, buffer, sizeof( buffer ), 
                                         0 , (struct sockaddr*) &addrFrom, &slen );     
@@ -157,16 +206,11 @@ bool UdpSocket::receive( Datagram& datagram )
             Address incomingAddr;
             incomingAddr.fromSockAddr( addrFrom );
             
-            datagram.setData( buffer, count );
+            datagram.setContent( buffer, count );
             datagram.setAddress( incomingAddr ); 
             
             result = true;
-        }
-        else
-        {             
-            ::std::cout <<"RECV: " << strerror(errno) << ::std::endl;       
-        }
-        
+        }        
     }
     
     return result;

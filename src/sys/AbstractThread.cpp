@@ -1,20 +1,29 @@
 /*
- * Copyright 2016 Przemyslaw Podwapinski <p.podwapinski@gmail.com>
+ * Copyright (c) 2016, Przemysław Podwapiński <p.podwapinski@gmail.com>
+ * All rights reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * THIS SOFTWARE IS PROVIDED BY Przemysław Podwapiński ''AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL Przemysław Podwapiński BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
 
+#include "sys/ESysDefs.h"
 #include "sys/AbstractThread.h"
 #include <iostream>
 
@@ -25,9 +34,6 @@
     #define THREAD_API_WIN32
     #include <windows.h>
 #endif
-
-typedef ::std::lock_guard<std::mutex> TLockMutex;
-typedef ::std::unique_lock<std::mutex> TLockUnique;
 
 namespace
 {
@@ -81,6 +87,7 @@ AbstractThread::AbstractThread( const std::string& name )
 bool AbstractThread::start()
 {
     bool result = false;
+    
     TLockMutex l( m_mutex );
     
     if ( isState( ThreadState_New ) )
@@ -89,8 +96,8 @@ bool AbstractThread::start()
         m_thread = std::thread( &AbstractThread::trampoline, this );
         result = m_thread.joinable();
         
-        setThreadName( m_thread, m_name );
-    }
+        ::setThreadName( m_thread, m_name );
+    }                     
     
     return result;
 }

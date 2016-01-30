@@ -18,8 +18,6 @@
 #include "app/SimpleApp.h"
 #include "app/AppContext.h"
 #include <iostream>
-#include <mutex>
-#include <atomic>
 
 
 namespace app

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, <copyright holder> <email>
+ * Copyright (c) 2016, Przemysław Podwapiński <p.podwapinski@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,14 +9,11 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *     notice, this list of conditions and the following disclaimer in the
  *     documentation and/or other materials provided with the distribution.
- *     * Neither the name of the <organization> nor the
- *     names of its contributors may be used to endorse or promote products
- *     derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY <copyright holder> <email> ''AS IS'' AND ANY
+ * THIS SOFTWARE IS PROVIDED BY Przemysław Podwapiński ''AS IS'' AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <copyright holder> <email> BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL Przemysław Podwapiński BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -50,10 +47,33 @@ namespace net
             
         Datagram( const Address& addr = Address() );
         
-        void setData( const void* from, const size_t bytes );
+        
+        /**
+         * Fill the Datagram with given raw data
+         * @arg from
+         * @arg bytes
+         */
+        void setContent( const void* from, const size_t bytes );
         
         
+        /**
+         * Fill the Datagram with text
+         * @arg text
+         */
+        void setContent( const ::std::string& text );
+        
+        
+        /**
+         * Set the Datagram's recipent
+         * @arg addr
+         */
         void setAddress( const Address& addr );
+        
+        
+        /**
+         * Convert the payload into string
+         */
+        void toString( std::string& text ) const;
         
         
         const Address& getAddress() const
@@ -64,7 +84,7 @@ namespace net
         
         const TDataGramBuffer& getData() const
         {
-            return m_data;
+            return m_payload;
         }
         
         
@@ -74,7 +94,7 @@ namespace net
         Address m_address;
         
         /* Datagram content */
-        TDataGramBuffer m_data;
+        TDataGramBuffer m_payload;
     };
 
 }; // namespace net

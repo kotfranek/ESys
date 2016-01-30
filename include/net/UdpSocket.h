@@ -56,9 +56,16 @@ namespace net
         
         /**
          * Bind to the given address
-         * @arg true
+         * @arg Address
          */
         bool bind( const Address& addr );
+        
+
+        /**
+         * Conenct to the given address
+         * @arg Address
+         */        
+        bool connect( const Address& addr );
         
         /**
          * Send a datagram
@@ -87,6 +94,9 @@ namespace net
         
         /* Socket Descriptor */
         int32_t m_socket;
+        
+        /* Socket connected flag */
+        bool m_connected;
     };
 
 }; // namespace net

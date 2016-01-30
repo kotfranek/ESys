@@ -43,6 +43,7 @@ $(TARGET): $(OBJS)
 
 clean:
 	rm -f $(OBJS)
+	rm -f $(DEPS)
 	rm -f $(OUTDIR)/$(TARGET).a
 	rm -f $(EXAMPLE_OUTDIR)/$(EXAMPLE_TARGET)
 	
