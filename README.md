@@ -12,7 +12,7 @@ System framework suited for resource constrained embedded applications
 ## Todo
 - implement the AutoString class (std::string analogue that does not use heap)
 - switch the implementation to use the AutoString for text handling
-- 
+
 Copyright &copy; 2016 [Przemysław Podwapiński][98]<br/>
 Distributed under the [Simplified BSD License][99].
 
