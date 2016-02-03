@@ -36,7 +36,15 @@ namespace sys
     template <class T, size_t N>class AutoArray
     {
     public:
+        /* STL-like declarations */
+        typedef T value_type;
         
+        typedef T* pointer;
+        
+        /* const pointer */
+        typedef const T* const_pointer;
+
+        /* Capacity, static */
         static const size_t CAPACITY = N;
         
         AutoArray()
@@ -46,7 +54,12 @@ namespace sys
        
         AutoArray( const AutoArray& other )
         {
-            copyFrom( other.m_data, other.m_size );
+            clone( other );
+        }
+        
+        T* begin()
+        {
+            return m_data;
         }
         
         const T* begin() const
@@ -96,7 +109,7 @@ namespace sys
          */
         AutoArray& operator=( const AutoArray& other )
         {
-            copyFrom( other.m_data, other.m_size );
+            clone( other );
         }
         
         
@@ -119,6 +132,12 @@ namespace sys
         {
             return N;
         }        
+        
+    protected:
+        void clone( const AutoArray& other )
+        {
+            copyFrom( other.m_data, ::std::min( other.m_size, CAPACITY ) );
+        }
         
     private:
         

@@ -28,7 +28,7 @@ SimpleApp::SimpleApp( const ::std::string& name )
 {   
     if ( AppContext::instance().registerApp( this ) )
     {
-        log( "App registered" );
+        //log( "App registered" );
     }
 }
 
@@ -53,7 +53,7 @@ void SimpleApp::waitForSignal( const uint32_t time )
 {
     if ( AppContext::instance().waitForExit( time ) )
     {
-        log( "Exit due to signal" );
+        log( "Exit on external signal" );
     }
     else
     {

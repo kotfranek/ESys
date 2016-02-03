@@ -1,4 +1,5 @@
 #include "app/SimpleApp.h"
+#include "esys/AutoString.h"
 #include "sys/AbstractThread.h"
 #include "sys/StopWatch.h"
 
@@ -51,6 +52,10 @@ public:
 private:    
     virtual int32_t onRun( const TStringVector& args )
     {       
+        ::esys::TString31 str1("HEKTIK500");
+        
+        str1.c_format( "Kuutax( %d ), %f, %s", 550, 142.456F, "Foo_bar_flow" );
+        
         ::sys::StopWatch stW( true );
         
         const size_t NUM_TH = 26U;
