@@ -3,10 +3,10 @@ System framework suited for resource constrained embedded applications
 
 ## Features
 - simple application framework with OS signal support
-- multithreading abstraction
+- OOD multithreading abstraction layer
 - minimalistic UDP socket implementation
-- reduce the heap usage to minimum, use the automatic variables whenever possible
-- template based Automatic Arrays
+- reduce the heap usage to minimum, use the automatic/stack variables whenever possible
+- template based Automatic Arrays and String analogues
 - requires C++11
 
 ## Todo
