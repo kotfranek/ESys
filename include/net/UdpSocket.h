@@ -88,6 +88,16 @@ namespace net
          */
         void close();
         
+        
+        /**
+         * Get the connected state
+         * @return 
+         */
+        bool isConnected() const
+        {
+            return m_connected;
+        }
+        
     private:
         UdpSocket(const UdpSocket& other);        
         UdpSocket& operator=(const UdpSocket& other); 

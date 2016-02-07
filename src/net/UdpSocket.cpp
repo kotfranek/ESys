@@ -25,6 +25,7 @@
 
 #include "net/UdpSocket.h"
 #include "net/Datagram.h"
+#include "esys/utils.h"
 
 #include <netdb.h>
 #include <sys/socket.h>
@@ -33,7 +34,6 @@
 #include <unistd.h> 
 
 #include <iostream>
-#include <cstring>
 
 namespace
 {
@@ -50,12 +50,7 @@ namespace
         return socket != SOCKET_INVALID;
     }
     
-    
-    template<typename T> void zeroMem( T& object )
-    {
-        ::memset( &object, 0, sizeof( T ) );
-    }
-    
+        
     /**
      * Set the Socket option
      * @arg socketId
@@ -194,7 +189,7 @@ bool UdpSocket::receive( Datagram& datagram )
     {           
         struct sockaddr_in addrFrom;
         socklen_t slen = sizeof( addrFrom );
-        ::zeroMem( addrFrom );
+        ::esys::zeroMem( addrFrom );
         
         uint8_t buffer[ ::net::TDataGramBuffer::CAPACITY ];
                

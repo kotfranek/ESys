@@ -24,19 +24,10 @@
  */
 
 #include "net/Address.h"
+#include "esys/utils.h"
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
-#include <cstring>
-
-namespace
-{
-    template<typename T> void zeroMem( T& object )
-    {
-        ::memset( &object, 0, sizeof( T ) );
-    }    
-}
 
 namespace net
 {
@@ -51,7 +42,7 @@ Address::Address( const uint16_t port, const std::string& addr )
 
 void Address::toSockAddr( sockaddr_in& addr ) const
 {
-    ::zeroMem( addr );
+    ::esys::zeroMem( addr );
     
     addr.sin_family = AF_INET;
     addr.sin_port = htons( m_port );

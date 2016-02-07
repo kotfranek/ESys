@@ -35,9 +35,10 @@
 namespace net
 {
     /* Maximum Datagram length in bytes */
-    static const size_t MAX_LENGTH = 1408U;    
+    static const size_t MAX_UDP_DATAGRAM_LENGTH = 1408U;    
     
-    typedef ::sys::AutoArray<uint8_t, MAX_LENGTH> TDataGramBuffer;
+    /* Datagram payload type */
+    typedef ::sys::AutoArray<uint8_t, MAX_UDP_DATAGRAM_LENGTH> TDataGramBuffer;
     
     class Datagram
     {
