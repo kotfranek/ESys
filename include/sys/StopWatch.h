@@ -63,13 +63,16 @@ namespace sys
          * @param duration
          * @return 
          */
-        bool elapsed( const int64_t& duration ) const;
+        inline bool elapsed( const int64_t& duration ) const
+        {
+            return duration < elapsed();            
+        }
         
         
         /**
          * Stop the timer if given time period elapsed
          * @param duration Time Period
-         * @return true, if timer was stoppeda
+         * @return true, if timer was stopped
          */
         bool stopIfElapsed( const int64_t& duration );
         

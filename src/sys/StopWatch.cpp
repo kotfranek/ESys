@@ -80,12 +80,6 @@ int64_t StopWatch::elapsed() const
 }
 
 
-bool StopWatch::elapsed( const int64_t& duration ) const
-{
-    return duration < elapsed();
-}
-
-
 int64_t StopWatch::stop()
 {
     int64_t result  = elapsed();
@@ -100,7 +94,7 @@ bool StopWatch::stopIfElapsed( const int64_t& duration )
 {
     bool result = false;
     
-    if ( duration < elapsed() )
+    if ( elapsed( duration ) )
     {
         stopImpl();
     }
