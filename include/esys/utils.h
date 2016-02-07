@@ -19,6 +19,18 @@
 
 namespace esys
 {
+    template<class T> union VariableToBytes
+    {   
+        /* Length in bytes */
+        static const size_t SIZE = sizeof( T );
+        
+        /* Original value */
+        T m_variable;
+        
+        /* Byte representation */
+        uint8_t m_raw[ SIZE ];
+    };
+    
     /**
      * Serialize as a Low-Endian
      * @param dest
@@ -35,6 +47,23 @@ namespace esys
         } 
 
         return sizeof( T );
+    }
+    
+    
+    /**
+     * De-serialize the variable
+     * @param src
+     * @param variable
+     */
+    template<class T> void deserialize( void* src, T& variable )
+    {
+        variable = 0;
+        uint8_t* auxSrc = (uint8_t*) src;
+        
+        for( size_t i = 0U; i < sizeof( T ); i++ )
+        {
+            variable += static_cast<uint8_t>( ( *( auxSrc + i ) >> ( 8U * i ) ) & 0xFF );
+        }         
     }
     
     
