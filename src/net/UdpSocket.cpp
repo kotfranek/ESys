@@ -90,8 +90,6 @@ bool UdpSocket::open( const uint16_t port )
         
         if ( -1 != ::bind( m_socket, ( struct sockaddr * ) &addrOwn, sizeof( addrOwn ) ) )
         {
-            ::std::cout << "BIND" << ::std::endl;
-
             result = ::setSocketOption( m_socket, SO_REUSEADDR, OPT_REUSE_VALUE );
         }
         else
