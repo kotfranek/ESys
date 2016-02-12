@@ -17,6 +17,9 @@
 #include <cstring>
 #include <stdint.h>
 
+/* Element count in given array */
+#define ESYS_ARRAY_SIZE(x) sizeof(x) / sizeof(x[0])
+
 namespace esys
 {
     template<class T> union VariableToBytes
@@ -54,8 +57,9 @@ namespace esys
      * De-serialize the variable
      * @param src
      * @param variable
+     * @return number of bytes written
      */
-    template<class T> void deserialize( void* src, T& variable )
+    template<class T> size_t deserialize( void* src, T& variable )
     {
         variable = 0;
         uint8_t* auxSrc = (uint8_t*) src;
@@ -63,7 +67,9 @@ namespace esys
         for( size_t i = 0U; i < sizeof( T ); i++ )
         {
             variable += static_cast<uint8_t>( ( *( auxSrc + i ) >> ( 8U * i ) ) & 0xFF );
-        }         
+        }
+        
+        return sizeof( T );
     }
     
     
@@ -73,7 +79,7 @@ namespace esys
      */
     template<typename T> void zeroMem( T& object )
     {
-        ::memset( &object, 0, sizeof( T ) );
+        ::std::memset( &object, 0, sizeof( T ) );
     }    
 }
 
