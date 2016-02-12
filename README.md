@@ -9,6 +9,10 @@ System framework suited for resource constrained embedded applications
 - template based Automatic Arrays and String analogues
 - requires C++11
 
+## ChangeLog
+### 0.0.1
+Initial commit
+
 ## Todo
 - implement the AutoString class (std::string analogue that does not use heap)
 - switch the implementation to use the AutoString for text handling
