@@ -42,6 +42,11 @@ namespace app
         AppContext();
         
         
+        /**
+         * Register only one APP instance
+         * @param app
+         * @return 
+         */
         bool registerApp( SimpleApp* app );
         
         
@@ -53,10 +58,25 @@ namespace app
         bool waitForExit( const uint32_t timeout = 0U );
         
         
+        /**
+         * Register the signal handler for the given Signal-Id
+         * @param signal
+         */
+        void handleSignal( const int32_t signal );
+        
+        
     private:
+        /**
+         * Signal handler function. Forwards the call to the AppContext object.
+         * @param signal
+         */
         static void signalHandler( const int32_t signal );        
         
         
+        /**
+         * AppContext signal handler. Notifies the Application instance.
+         * @param signal
+         */
         void onSignal( const int32_t signal );
         
         /* Access protection */
@@ -67,7 +87,7 @@ namespace app
         ::std::condition_variable m_condExit;
         
         /* Set when exit requested via a SIGTERM */
-        bool m_flagExit;
+        bool m_exitSignalRaised;
         
         /* Instance - Can be only single App in process */
         SimpleApp* m_instance;

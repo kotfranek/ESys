@@ -24,6 +24,7 @@
  */
 
 #include "app/AppContext.h"
+#include "app/SimpleApp.h"
 #include "sys/ESysDefs.h"
 #include <csignal>
 #include <chrono> 
@@ -46,11 +47,17 @@ AppContext& AppContext::instance()
 AppContext::AppContext()
     : m_mutex()
     , m_condExit()
-    , m_flagExit( false )
+    , m_exitSignalRaised( false )
     , m_instance( NULL )
 {
-    ::std::signal( SIGTERM, &AppContext::signalHandler );
-    ::std::signal( SIGINT, &AppContext::signalHandler );
+    handleSignal( SIGTERM );
+    handleSignal( SIGINT );
+}
+
+
+void AppContext::handleSignal( const int32_t signal )
+{
+    ::std::signal( signal, &AppContext::signalHandler );    
 }
 
 
@@ -78,7 +85,7 @@ bool AppContext::waitForExit( const uint32_t timeout )
     if ( 0U == timeout )
     {
         m_condExit.wait( l );
-        result = true;
+        result = m_exitSignalRaised;
     }
     else
     {
@@ -99,13 +106,16 @@ void AppContext::signalHandler( const int32_t signal )
 void AppContext::onSignal( const int32_t signal )
 {
     ::sys::TLockMutex l( m_mutex );
+    
     if ( NULL != m_instance )
     {
+        m_instance->onSignal( signal );
+        
         switch( signal )
         {
             case SIGINT:
             case SIGTERM:
-                m_flagExit = true;
+                m_exitSignalRaised = true;
                 m_condExit.notify_all();
                 break;
                 

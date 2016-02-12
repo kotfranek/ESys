@@ -40,6 +40,16 @@ namespace app
         * @param argv
         */
         int32_t run( const int32_t argc, const char * const * argv  );
+        
+        
+        /**
+         * Invoked as a signal handler.
+         * Implement this method if you need to handle any of the registered signals.
+         * @param signal
+         */
+        virtual void onSignal( const int32_t signal )
+        {            
+        }        
 
     protected:    
         /**
@@ -48,6 +58,7 @@ namespace app
         * @param args Command Line Arguments
         */
         virtual int32_t onRun( const TStringVector& args ) = 0;
+               
         
         /**
         * Log method. By default to console.
@@ -64,8 +75,9 @@ namespace app
         /**
         * Waits until the Application is closed by system Signal
         * @arg time Timeout in ms. 0 for no timeout.
+        * @return true, if signal rised, false on timeout
         */
-        void waitForSignal( const uint32_t timeout = 0U );
+        bool waitForExit( const uint32_t timeout = 0U );
         
     private:
         /* Prohibit assignment */

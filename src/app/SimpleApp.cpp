@@ -49,16 +49,9 @@ int32_t SimpleApp::run( const int32_t argc, const char * const * argv  )
 }
 
 
-void SimpleApp::waitForSignal( const uint32_t time )
+bool SimpleApp::waitForExit( const uint32_t time )
 {
-    if ( AppContext::instance().waitForExit( time ) )
-    {
-        log( "Exit on external signal" );
-    }
-    else
-    {
-        log( "Timeout" );
-    }
+    return AppContext::instance().waitForExit( time );
 }
 
 
