@@ -40,6 +40,9 @@ namespace
     /* Invalid Socket Id */
     const int32_t SOCKET_INVALID = -1; 
     
+    /* Socket error return code */
+    const int32_t SOCKET_ERROR = -1;
+    
     /* Socket Reusability */
     const int32_t OPT_REUSE_VALUE = 1;
     
@@ -88,7 +91,7 @@ bool UdpSocket::open( const uint16_t port )
         struct sockaddr_in addrOwn;
         Address( port ).toSockAddr( addrOwn );
         
-        if ( -1 != ::bind( m_socket, ( struct sockaddr * ) &addrOwn, sizeof( addrOwn ) ) )
+        if ( ::SOCKET_ERROR != ::bind( m_socket, ( struct sockaddr * ) &addrOwn, sizeof( addrOwn ) ) )
         {
             result = ::setSocketOption( m_socket, SO_REUSEADDR, OPT_REUSE_VALUE );
         }
@@ -109,34 +112,29 @@ bool UdpSocket::send( const Datagram& datagram )
     
     if ( ::isSocketValid( m_socket ) )
     {    
-        const TDataGramBuffer& db = datagram.getData();        
+        const TDataGramBuffer& db = datagram.getData();
         
-        if ( m_connected )
+        struct sockaddr* socketAddress = NULL;
+        size_t socketAddressSize = 0U;
+        
+        struct sockaddr_in addrTo;
+        
+        if ( !m_connected )
         {
-            if ( -1 != ::send( m_socket, db.begin(), db.size(), 0 ) )
-            {
-                
-            }
-            else
-            {
-                m_connected = false;
-            }
+            datagram.getAddress().toSockAddr( addrTo );
+            socketAddress = (sockaddr*) &addrTo;
+            socketAddressSize = sizeof( addrTo );          
+        }
+        
+        if ( ::SOCKET_ERROR != ::sendto( m_socket, db.begin(), db.size(), 0, socketAddress, socketAddressSize ) )
+        {
+            result = true;
         }
         else
         {
-            struct sockaddr_in addrTo;
-            
-            datagram.getAddress().toSockAddr( addrTo );
-            
-            if ( -1 != sendto( m_socket, db.begin(), db.size(), 0, ( struct sockaddr * )&addrTo, sizeof( addrTo )) )
-            {
-                result = true;
-            }
-            else
-            {
-                ::std::cout << strerror(errno) << ::std::endl;
-            }                
-        }
+            m_connected = false;
+            ::std::cout << strerror(errno) << ::std::endl;
+        }         
     }
     
     return result;
@@ -167,7 +165,7 @@ bool UdpSocket::connect( const Address& addr )
         
         addr.toSockAddr( addrTo );
         
-        if ( -1 != ::connect( m_socket, ( struct sockaddr * ) &addrTo, sizeof( addrTo ) ) )
+        if ( ::SOCKET_ERROR != ::connect( m_socket, ( struct sockaddr * ) &addrTo, sizeof( addrTo ) ) )
         {
             m_connected = true;            
         }
@@ -194,7 +192,7 @@ bool UdpSocket::receive( Datagram& datagram )
         const ssize_t count = recvfrom( m_socket, buffer, sizeof( buffer ), 
                                         0 , (struct sockaddr*) &addrFrom, &slen );     
         
-        if( -1 != count )
+        if( ::SOCKET_ERROR != count )
         {
             Address incomingAddr;
             incomingAddr.fromSockAddr( addrFrom );
