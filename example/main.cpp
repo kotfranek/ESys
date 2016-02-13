@@ -2,6 +2,7 @@
 #include "esys/AutoString.h"
 #include "sys/AbstractThread.h"
 #include "sys/StopWatch.h"
+#include "sys/SystemInfo.h"
 
 #include <iostream>
 
@@ -19,7 +20,7 @@ namespace
     private:        
         virtual void run()
         {
-            uint32_t i = 200;
+            uint32_t i = 100;
             while ( i != 0U )
             {
                 if ( isStopRequested() )
@@ -29,7 +30,7 @@ namespace
                 }
                 
                 ::std::cout << "TH: '" << m_char << "', i = " << i << ::std::endl;
-                sleep( 50 + ( m_char * 2U ) );
+                sleep( 30 + ( m_char * 2U ) );
                 --i;
             }
         }
@@ -44,7 +45,7 @@ class DemoApp : public ::app::SimpleApp
 {
 public:
     DemoApp()
-        : ::app::SimpleApp( "dupet" )
+        : ::app::SimpleApp( "ESysDemo" )
     {
 
     }
@@ -52,9 +53,27 @@ public:
 private:    
     virtual int32_t onRun( const TStringVector& args )
     {       
-        ::esys::TString31 str1("HEKTIK500");
+        ::esys::TString31 str1( "0123456789" );
+        ::esys::TString63 str2( "ABCDEFGHIJ" );
         
-        str1.c_format( "Kuutax( %d ), %f, %s", 550, 142.456F, "Foo_bar_flow" );
+        ::std::cout << "str1 = '" << str1 << "', sr2 = '" << str2 << "'" << ::std::endl;      
+        ::std::cout << "str1.length() = " << str1.length() << ", str2.length() = " << str2.length() << ::std::endl; 
+        
+        ::std::cout << "str1.append( str2 ).append( str2 ).append( str2 );" << ::std::endl;      
+        str1.append( str2 ).append( str2 ).append( str2 );
+        
+        ::std::cout << "str1 = '" << str1 << "', Str2 = '" << str2 << "'" << ::std::endl; 
+        ::std::cout << "str1.length() = " << str1.length() << ", str2.length() = " << str2.length() << ::std::endl; 
+        
+        const size_t offset = str1.find( "AB-C", 12 );
+        
+        ::std::cout << "First occurence is: " << offset << ::std::endl;        
+        
+        str1.c_format( "ProcessId = %d", ::sys::SystemInfo::getOwnProcessId() );                   
+        ::std::cout << str1 << ::std::endl;
+        str1.clear();
+        
+        
         
         ::sys::StopWatch stW( true );
         
@@ -68,7 +87,7 @@ private:
             threads[ i ]->start();      
         }        
         
-        waitForSignal( 1500U );
+        waitForExit( 200 );
         
         for ( size_t i = 0U; i < NUM_TH; i++ )
         {

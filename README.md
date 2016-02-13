@@ -4,17 +4,21 @@ System framework suited for resource constrained embedded applications
 ## Features
 - simple application framework with OS signal support
 - OOD multithreading abstraction layer
-- minimalistic UDP socket implementation
+- minimalistic UDP networking
 - reduce the heap usage to minimum, use the automatic/stack variables whenever possible
-- template based Automatic Arrays and String analogues
-- requires C++11
+- template based containers: Automatic Arrays and String stack-memory analogues
+- extends the generic C++11 implementation
+- posix and WinAPI compatible
 
 ## ChangeLog
+
+### 0.1.0
+- implemented AutoString
+
 ### 0.0.1
-Initial commit
+- initial commit
 
 ## Todo
-- implement the AutoString class (std::string analogue that does not use heap)
 - switch the implementation to use the AutoString for text handling
 
 Copyright &copy; 2016 [Przemysław Podwapiński][98]<br/>

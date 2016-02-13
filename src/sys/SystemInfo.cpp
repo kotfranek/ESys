@@ -23,30 +23,52 @@
  *
  */
 
-#ifndef SYS_TYPES_H__
-#define SYS_TYPES_H__
+/* 
+ * File:   SystemInfo.cpp
+ * Author: kret
+ * 
+ * Created on February 13, 2016, 12:22 PM
+ */
 
-#include <mutex>
+#include "sys/ESysDefs.h"
 
-#if defined (__linux__ ) || ( defined (__unix__) ) || (defined (__APPLE__))
-    #define ESYS_API_POSIX
-#elif defined ( _WIN32 )
-    #define ESYS_API_WIN32
+#if defined ESYS_API_POSIX
+    #include <pthread.h>
+    #include <sys/types.h>
+    #include <unistd.h>
+#elif defined ESYS_API_WIN32
+    #include <process.h>
+    #include <WinBase.h>
 #endif
+
+#include "sys/SystemInfo.h"
+
+namespace
+{
+    ::sys::TPid getProcessId()
+    {
+#if defined ESYS_API_POSIX
+        return getpid();
+#elif defined ESYS_API_WIN32
+        return ::GetCurrentProcessId();
+#endif        
+    }
+}
 
 namespace sys
 {
-    /* Mutex Lock Guard */
-    typedef ::std::lock_guard<std::mutex> TLockMutex;
-    
-    /* Mutex Lock Guard (Unique) */
-    typedef ::std::unique_lock<std::mutex> TLockUnique; 
-    
-    /* Process Id */
-    typedef int32_t TPid;
-    
-    /* Time */
-    typedef int64_t TTime;
-};
 
-#endif // SYS_TYPES_H
+SystemInfo::SystemInfo() 
+{
+}
+
+SystemInfo::~SystemInfo() 
+{
+}
+
+TPid SystemInfo::getOwnProcessId()
+{
+    return ::getProcessId();
+}
+
+}; // namespace sys

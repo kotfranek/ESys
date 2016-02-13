@@ -30,34 +30,67 @@
 #include <cstdarg>
 #include <string.h>
 #include <stdint.h>
+#include <ostream>
 
 #include "sys/AutoArray.h"
 
 namespace esys
 {
     /** 
-     * Automatic String class 
+     * Automatic String class.
+     * The intention is to mimic the ::std::string API without the heap 
+     * allocator.
      */
     template <class T, size_t N>class AutoString : public ::sys::AutoArray< T, N + 1U >
     {
-    public:
+        /* Parent class typename */
         typedef ::sys::AutoArray<T, N+1U> TParent;
+        
+        /* NULL-terminating Character */
+        static const T CHAR_0 = '\0';
+        
+        /* Other AutoString specialization */
+        //typedef AutoString<T, R> TAutoStringOther;
+        
+    public:
+        /* Maximum value for size_t */
+        static const size_t npos = TParent::CAPACITY;
+        
+        /**
+         * Default constructor.
+         * Creates empty string.
+         */
         AutoString()
             : TParent()           
         {
+            clear();
         }
         
         
         AutoString( typename TParent::const_pointer src )
             : TParent()
         {
-            TParent::copyFrom( src, ::strlen( src ) );
+            assign( src );
         }
        
+        
+        /**
+         * Copy-constructor
+         * @param other source
+         */
         AutoString( const AutoString& other )
             : TParent()        
         {
-            clone( other );
+            assign( other );
+        }
+        
+        /**
+         * Return length of string
+         * @return length in bytes
+         */
+        size_t length() const
+        {
+            return ::strlen( TParent::begin() );
         }
         
         /**
@@ -75,6 +108,128 @@ namespace esys
             va_end ( args );                
             return num;
         }
+        
+        
+        /**
+         * Clear string
+         * Erases the contents of the string, which becomes an empty 
+         * string (with a length of 0 characters).
+         */
+        void clear()
+        {
+            TParent::at( 0U ) = CHAR_0;
+        }
+        
+        /**
+         * Assign content to string
+         * Assigns a new value to the string, replacing its current contents.
+         * @param str
+         * @return *this
+         */
+        AutoString& assign( typename TParent::const_pointer str )
+        {
+            const size_t end = ::std::min( N, ::strlen( str ) );
+            ::strncpy( TParent::begin(), str, end );
+            TParent::at( end ) = CHAR_0;
+            
+            return *this;
+        }
+        
+        
+        /**
+         * Assign content to string
+         * Assigns a new value to the string, replacing its current contents.
+         * @param str
+         * @return *this
+         */
+        template <size_t R>AutoString& assign( const AutoString<T,R>& str )
+        {
+            return assign( str.c_str() );
+        }
+        
+        
+        /**
+         * Append to string
+         * Extends the string by appending additional characters at 
+         * the end of its current value
+         * @param src
+         * @return 
+         */
+        AutoString& append( typename TParent::const_pointer src )
+        {
+            safeCopyFrom( length(), src );
+            return *this;
+        }
+        
+
+        /**
+         * Append to string
+         * Extends the string by appending additional characters at 
+         * the end of its current value
+         * @param src
+         * @return 
+         */        
+        template <size_t R>AutoString& append( const AutoString<T,R>& str )
+        {
+            return append( str.c_str() );
+        }  
+        
+        
+        /**
+         * Check, if the string is empty
+         * @return 
+         */
+        bool empty() const
+        {
+            return CHAR_0 == TParent::at( 0U );
+        }
+        
+        
+        /**
+         * Compare two strings
+         * @param str
+         * @return true, if equal
+         */
+        template <size_t R> bool equals( const AutoString<T,R>& str ) const
+        {
+            bool result = false;
+            
+            if ( length() == str.length() )
+            {
+                result = 0 == ::strncmp( c_str(), str.c_str(), ::std::min( N, R ) );
+            }
+            
+            return result;
+        }
+        
+        
+        /**
+         * Find content in string
+         * Searches the string for the first occurrence of the sequence 
+         * specified by its arguments.
+         * When pos is specified, the search only includes characters at or 
+         * after position pos, ignoring any possible occurrences that include 
+         * characters before pos.
+         * @param s
+         * @param pos
+         * @return The position of the first character of the first match.
+         */
+        size_t find( typename TParent::const_pointer s, size_t pos = 0U ) const
+        {
+            size_t result = npos;
+            
+            if ( pos < length() )
+            {
+                typename TParent::const_pointer ptr = ::strstr( c_str() + pos, s ); 
+
+                if ( NULL != ptr )
+                {
+                    result = ptr - TParent::begin();
+                }
+            }
+            
+            return result;
+        }
                                               
         
         /**
@@ -87,6 +242,15 @@ namespace esys
         }
         
     private:
+        void safeCopyFrom( const size_t index, typename TParent::const_pointer str )
+        {
+            const size_t myLength = length();
+            const size_t end = ::std::min( N - myLength, ::strlen( str ) );
+            
+            ::strncpy( TParent::begin() + myLength, str, end );
+            
+            TParent::at( myLength + end ) = CHAR_0;            
+        }
    
     };
     
@@ -105,5 +269,18 @@ namespace esys
     
 
 }; // namespace esys
+
+/**
+ * Stream operator overload to let the ::esys::AutoString type string to be 
+ * used in the native C++ environment
+ * @param os ostream
+ * @param str ::esys::AutoString instance
+ * @return ostream reference 
+ */
+template <class T, size_t N> ::std::ostream& operator<< (::std::ostream& os, const ::esys::AutoString<T, N>& str)
+{
+    os << str.c_str();
+    return os;
+}
 
 #endif // ESYS_AUTOSTRING_H

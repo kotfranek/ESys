@@ -57,6 +57,27 @@ namespace sys
             clone( other );
         }
         
+        /**
+         * Expose element at given index
+         * @param index
+         * @return reference
+         */
+        T& at( const size_t index )
+        {
+            return *( begin() + index );
+        }
+        
+        /**
+         * Expose element at given index (const version)
+         * @param index
+         * @return const reference
+         */
+        const T& at( const size_t index ) const
+        {
+            return *( begin() + index );
+        }
+        
+        
         T* begin()
         {
             return m_data;

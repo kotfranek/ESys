@@ -23,30 +23,36 @@
  *
  */
 
-#ifndef SYS_TYPES_H__
-#define SYS_TYPES_H__
+/* 
+ * File:   SystemInfo.h
+ * Author: kret
+ *
+ * Created on February 13, 2016, 12:22 PM
+ */
 
-#include <mutex>
+#ifndef SYSTEMINFO_H
+#define SYSTEMINFO_H
 
-#if defined (__linux__ ) || ( defined (__unix__) ) || (defined (__APPLE__))
-    #define ESYS_API_POSIX
-#elif defined ( _WIN32 )
-    #define ESYS_API_WIN32
-#endif
+#include "sys/ESysDefs.h"
 
 namespace sys
 {
-    /* Mutex Lock Guard */
-    typedef ::std::lock_guard<std::mutex> TLockMutex;
-    
-    /* Mutex Lock Guard (Unique) */
-    typedef ::std::unique_lock<std::mutex> TLockUnique; 
-    
-    /* Process Id */
-    typedef int32_t TPid;
-    
-    /* Time */
-    typedef int64_t TTime;
+    class SystemInfo 
+    {
+    public:
+        SystemInfo();
+        ~SystemInfo();
+        
+        /**
+         * Get the Process Id
+         * @return process Id
+         */
+        static TPid getOwnProcessId();
+    private:
+
+    };
+
 };
 
-#endif // SYS_TYPES_H
+#endif /* SYSTEMINFO_H */
+

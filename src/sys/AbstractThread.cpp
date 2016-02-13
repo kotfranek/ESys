@@ -27,11 +27,9 @@
 #include "sys/AbstractThread.h"
 #include <iostream>
 
-#if defined (__linux__ ) || ( defined (__unix__) ) || (defined (__APPLE__))
-    #define THREAD_API_POSIX
+#if defined ESYS_API_POSIX
     #include <pthread.h>
-#elif defined ( _WIN32 )
-    #define THREAD_API_WIN32
+#elif defined ESYS_API_WIN32
     #include <windows.h>
 #endif
 
@@ -40,9 +38,9 @@ namespace
     void setThreadName( ::std::thread& object, const ::std::string& name )
     {
         auto handle = object.native_handle();
-        #if defined (THREAD_API_POSIX)        
-        pthread_setname_np( handle, name.c_str() );           
-        #elif defined (THREAD_API_WIN32)
+        #if defined (ESYS_API_POSIX)        
+        ::pthread_setname_np( handle, name.c_str() );           
+        #elif defined (ESYS_API_WIN32)
         // Sorry, no windows implementation available
         #else
             #error Not supported API
@@ -53,10 +51,10 @@ namespace
     void setThreadPriority( ::std::thread& object, const int32_t priority )
     {
         auto handle = object.native_handle();
-        #if defined (THREAD_API_POSIX)        
-        pthread_setschedprio( handle, priority );
-        #elif defined (THREAD_API_WIN32)
-        SetThreadPriority( handle, priority );
+        #if defined (ESYS_API_POSIX)        
+        ::pthread_setschedprio( handle, priority );
+        #elif defined (ESYS_API_WIN32)
+        ::SetThreadPriority( handle, priority );
         #else
             #error Not supported OS
         #endif         
