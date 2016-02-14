@@ -13,6 +13,7 @@ System framework suited for resource constrained embedded applications
 ## ChangeLog
 
 ### 0.1.0
+2016-02-14
 - implemented AutoString
 
 ### 0.0.1
