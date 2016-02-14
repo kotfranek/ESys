@@ -22,6 +22,8 @@
 #include <string>
 #include <vector>
 
+#include "esys/AutoString.h"
+
 namespace app
 {
 
@@ -31,7 +33,12 @@ namespace app
         /* String Vector */
         typedef ::std::vector<std::string> TStringVector;
         
-        explicit SimpleApp( const ::std::string& name );
+        /**
+         * Constructor
+         * Ceates a new Application with the given name
+         * @param name max. 63 characters
+         */
+        explicit SimpleApp( const ::esys::TString63& name );
         virtual ~SimpleApp();
         
         /**
@@ -67,7 +74,7 @@ namespace app
         virtual void log( const char* message );
         
         /* Expose the Application name */
-        const ::std::string& getName() const
+        const ::esys::TString63& getName() const
         {
             return m_name;
         }
@@ -87,7 +94,7 @@ namespace app
         SimpleApp (const SimpleApp & other);
 
         /* Application Name */
-        const ::std::string m_name;
+        const ::esys::TString63 m_name;
     };
 
 }; // namespace app

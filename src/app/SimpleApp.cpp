@@ -23,7 +23,7 @@
 namespace app
 {
 
-SimpleApp::SimpleApp( const ::std::string& name )
+SimpleApp::SimpleApp( const ::esys::TString63& name )
     : m_name( name )
 {   
     if ( AppContext::instance().registerApp( this ) )
