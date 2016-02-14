@@ -30,6 +30,8 @@
 #include <mutex>
 #include <condition_variable>
 
+#include "esys/AutoString.h"
+
 /**
  * Thread Abstraction Class
  * Object Oriented apporach to multithreading in C++11
@@ -66,7 +68,7 @@ public:
     /**
      * Expose the Thread name
      */
-    const ::std::string& getName() const
+    const ::esys::TString31& getName() const
     {
         return m_name;
     }
@@ -85,7 +87,7 @@ public:
     
     
 protected:
-    explicit AbstractThread( const ::std::string& name ); 
+    explicit AbstractThread( const ::esys::TString31& name ); 
     /* Thread body 
      * Thread will not stop until this method exits.
      */
@@ -146,7 +148,7 @@ private:
     ::std::mutex m_mutex;
         
     /* Thread name */
-    const ::std::string m_name;
+    const ::esys::TString31 m_name;
     
     /* Thread state */
     ThreadState m_state;

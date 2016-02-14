@@ -15,7 +15,7 @@ namespace
     {
     public:
         explicit Th1( const uint32_t id )
-            : ::sys::AbstractThread( ::std::to_string( id ) )
+            : ::sys::AbstractThread( ::std::to_string( id ).c_str() )
             , m_char( 'A' + id )
         {
         }

@@ -35,7 +35,7 @@
 
 namespace
 {
-    void setThreadName( ::std::thread& object, const ::std::string& name )
+    void setThreadName( ::std::thread& object, const ::esys::TString31& name )
     {
         auto handle = object.native_handle();
         #if defined (ESYS_API_POSIX)        
@@ -71,7 +71,7 @@ void AbstractThread::trampoline( AbstractThread* object )
 
     
 
-AbstractThread::AbstractThread( const std::string& name )
+AbstractThread::AbstractThread( const ::esys::TString31& name )
     : m_mutex()
     , m_name( name )
     , m_state( AbstractThread::ThreadState_New )
