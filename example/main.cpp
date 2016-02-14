@@ -4,8 +4,6 @@
 #include "sys/StopWatch.h"
 #include "sys/SystemInfo.h"
 #include "sys/VersionInfo.h"
-#include "net/Address.h"
-#include "net/Datagram.h"
 
 #include <iostream>
 
@@ -84,12 +82,7 @@ private:
         
         str1.c_format( "ProcessId = %d", ::sys::SystemInfo::getOwnProcessId() );                   
         ::std::cout << str1 << ::std::endl;
-        str1.clear();
-        
-        ::net::Address addr( 67);
-        ::net::Datagram datagram( addr );
-        
-        ::printf("Address = %s\n", addr.getIp().c_str());
+        str1.clear();       
         
         ::sys::StopWatch stW( true );
         

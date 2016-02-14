@@ -36,7 +36,7 @@ namespace net
     static const size_t IP6_ADDRESS_STRING_MAX_LENGTH = 46;
     
     /* IP String */
-    typedef ::esys::AutoString<char, IP6_ADDRESS_STRING_MAX_LENGTH + 1U> TStringIp;
+    typedef ::esys::TString63 TStringIp;
     
     class Address
     {
@@ -46,7 +46,7 @@ namespace net
          * @arg addr IPv4/IPv6 address as string
          * @arg port 16-bit Port Number
          */
-        explicit Address( const uint16_t port = 0U, const ::esys::TString63& addr = "" );
+        explicit Address( const uint16_t port = 0U, const TStringIp& addr = "" );
         
         /**
          * Set the address based on the given sockaddr struct
@@ -63,7 +63,7 @@ namespace net
         /**
          * @result Address
          */
-        const ::esys::TString63& getIp() const
+        const TStringIp& getIp() const
         {
             return m_address;
         }
@@ -88,7 +88,7 @@ namespace net
         uint16_t m_port;
         
         /* Address */
-        ::esys::TString63 m_address;
+        TStringIp m_address;
     };
 
 }; // namespace net

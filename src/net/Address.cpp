@@ -32,7 +32,7 @@
 namespace net
 {
 
-Address::Address( const uint16_t port, const ::esys::TString63& addr )
+Address::Address( const uint16_t port, const TStringIp& addr )
     : m_port( port )
     , m_address( addr )
 {
