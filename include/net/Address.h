@@ -82,6 +82,13 @@ namespace net
          */
         bool isValid() const;
         
+        
+        /**
+         * Create a string
+         * @return AutoString containing the address with port
+         */
+        ::esys::TString63 toString() const;
+        
     private:
         
         /* Port Number */

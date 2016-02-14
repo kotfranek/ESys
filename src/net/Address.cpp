@@ -62,4 +62,14 @@ void Address::fromSockAddr( const sockaddr_in& addr )
 }
 
 
+::esys::TString63 Address::toString() const 
+{
+    ::esys::TString63 result;
+    result.c_format( "%s:%u", m_address.c_str(), m_port );
+    
+    return result;
+}
+
+
+
 }; // namespace net
