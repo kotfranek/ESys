@@ -120,6 +120,11 @@ namespace esys
             TParent::at( 0U ) = CHAR_0;
         }
         
+        template <size_t R>AutoString& operator= ( const AutoString<T,R>& str ) 
+        {
+            return assign( str );
+        }
+        
         /**
          * Assign content to string
          * Assigns a new value to the string, replacing its current contents.

@@ -4,6 +4,8 @@
 #include "sys/StopWatch.h"
 #include "sys/SystemInfo.h"
 #include "sys/VersionInfo.h"
+#include "net/Address.h"
+#include "net/Datagram.h"
 
 #include <iostream>
 
@@ -49,8 +51,7 @@ class DemoApp : public ::app::SimpleApp
 public:
     DemoApp()
         : ::app::SimpleApp( "ESysDemo" )
-    {
-
+    {        
     }
     
 private:    
@@ -75,13 +76,20 @@ private:
         
         const size_t offset = str1.find( "AB-C", 12 );
         
-        ::std::cout << "First occurence is: " << offset << ::std::endl;        
+        ::std::cout << "First occurence is: " << offset << ::std::endl; 
+        
+        str1 = str2;
+        
+        ::std::cout << "str1 = str2, so str1 = " << str1.c_str() << ::std::endl; 
         
         str1.c_format( "ProcessId = %d", ::sys::SystemInfo::getOwnProcessId() );                   
         ::std::cout << str1 << ::std::endl;
         str1.clear();
         
+        ::net::Address addr( 67);
+        ::net::Datagram datagram( addr );
         
+        ::printf("Address = %s\n", addr.getIp().c_str());
         
         ::sys::StopWatch stW( true );
         

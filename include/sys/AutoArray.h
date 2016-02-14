@@ -131,6 +131,7 @@ namespace sys
         AutoArray& operator=( const AutoArray& other )
         {
             clone( other );
+            return *this;
         }
         
         
@@ -157,7 +158,7 @@ namespace sys
     protected:
         void clone( const AutoArray& other )
         {
-            copyFrom( other.m_data, ::std::min( other.m_size, CAPACITY ) );
+            copyFrom( other.m_data, ::std::min( other.m_size, this->capacity() ) );
         }
         
     private:
