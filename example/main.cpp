@@ -3,6 +3,7 @@
 #include "sys/AbstractThread.h"
 #include "sys/StopWatch.h"
 #include "sys/SystemInfo.h"
+#include "sys/VersionInfo.h"
 
 #include <iostream>
 
@@ -39,6 +40,8 @@ namespace
     };
 }
 
+/* Global version information */
+::sys::VersionInfo g_VER_INFO( 0, 0, 2 );
 
 
 class DemoApp : public ::app::SimpleApp
@@ -53,6 +56,11 @@ public:
 private:    
     virtual int32_t onRun( const TStringVector& args )
     {       
+        ::esys::TString31 versionString;
+        g_VER_INFO.toString( versionString, "ver.:" );
+        
+        ::printf( "%s: %s\n", getName().c_str(),versionString.c_str()  );
+        
         ::esys::TString31 str1( "0123456789" );
         ::esys::TString63 str2( "ABCDEFGHIJ" );
         
