@@ -37,8 +37,8 @@
     #include <sys/types.h>
     #include <unistd.h>
 #elif defined ESYS_API_WIN32
-    #include <process.h>
-    #include <WinBase.h>
+    #include <windows.h>
+    #include <process.h>	
 #endif
 
 #include "sys/SystemInfo.h"

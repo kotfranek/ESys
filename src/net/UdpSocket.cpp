@@ -27,30 +27,38 @@
 #include "net/Datagram.h"
 #include "esys/utils.h"
 
+#if defined ESYS_API_POSIX
 #include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h> 
+#elif defined ESYS_API_WIN32
+#include <winsock2.h>
+#include <windows.h>
+#endif
 
 #include <iostream>
 
 namespace
 {
+#if defined ESYS_API_POSIX	
     /* Invalid Socket Id */
-    const int32_t SOCKET_INVALID = -1; 
-    
+    const ::net::TSocket INVALID_SOCKET = -1; 
+  
     /* Socket error return code */
     const int32_t SOCKET_ERROR = -1;
-    
+#elif defined ESYS_API_WIN32
+	typedef size_t socklen_t;
+#endif   
     /* Socket Reusability */
     const int32_t OPT_REUSE_VALUE = 1;
     
     
     /* Test the socket validity */
-    inline bool isSocketValid( const int32_t socket )
+    inline bool isSocketValid( const ::net::TSocket socket )
     {
-        return socket != SOCKET_INVALID;
+        return socket != INVALID_SOCKET;
     }
     
         
@@ -63,7 +71,7 @@ namespace
      */
     template<typename T> bool setSocketOption( const int32_t socketId, const int32_t optionName, const T& option )
     {
-        return -1 != setsockopt( socketId, SOL_SOCKET, optionName, &option, sizeof( T ) );
+        return SOCKET_ERROR != ::setsockopt( socketId, SOL_SOCKET, optionName, &option, sizeof( T ) );
     }
         
 }
@@ -91,7 +99,7 @@ bool UdpSocket::open( const uint16_t port )
         struct sockaddr_in addrOwn;
         Address( port ).toSockAddr( addrOwn );
         
-        if ( ::SOCKET_ERROR != ::bind( m_socket, ( struct sockaddr * ) &addrOwn, sizeof( addrOwn ) ) )
+        if ( SOCKET_ERROR != ::bind( m_socket, ( struct sockaddr * ) &addrOwn, sizeof( addrOwn ) ) )
         {
             result = ::setSocketOption( m_socket, SO_REUSEADDR, OPT_REUSE_VALUE );
         }
@@ -126,7 +134,7 @@ bool UdpSocket::send( const Datagram& datagram )
             socketAddressSize = sizeof( addrTo );          
         }
         
-        if ( ::SOCKET_ERROR != ::sendto( m_socket, db.begin(), db.size(), 0, socketAddress, socketAddressSize ) )
+        if ( SOCKET_ERROR != ::sendto( m_socket, db.begin(), db.size(), 0, socketAddress, socketAddressSize ) )
         {
             result = true;
         }
@@ -165,7 +173,7 @@ bool UdpSocket::connect( const Address& addr )
         
         addr.toSockAddr( addrTo );
         
-        if ( ::SOCKET_ERROR != ::connect( m_socket, ( struct sockaddr * ) &addrTo, sizeof( addrTo ) ) )
+        if ( SOCKET_ERROR != ::connect( m_socket, ( struct sockaddr * ) &addrTo, sizeof( addrTo ) ) )
         {
             m_connected = true;            
         }
@@ -192,7 +200,7 @@ bool UdpSocket::receive( Datagram& datagram )
         const ssize_t count = recvfrom( m_socket, buffer, sizeof( buffer ), 
                                         0 , (struct sockaddr*) &addrFrom, &slen );     
         
-        if( ::SOCKET_ERROR != count )
+        if( SOCKET_ERROR != count )
         {
             Address incomingAddr;
             incomingAddr.fromSockAddr( addrFrom );
@@ -210,7 +218,12 @@ bool UdpSocket::receive( Datagram& datagram )
 
 void UdpSocket::close()
 {
+#if defined ESYS_API_POSIX
     ::close( m_socket );
+#elif defined ESYS_API_WIN32
+	::closesocket( m_socket );
+	::WSACleanup();
+#endif	
 }
 
 

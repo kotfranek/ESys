@@ -26,11 +26,23 @@
 #ifndef UDPSOCKET_H
 #define UDPSOCKET_H
 
+#include "sys/ESysDefs.h"
 #include "net/Address.h"
+
+#if defined ESYS_API_WIN32
+#include <winsock2.h>
+#include <windows.h>
+#endif
 
 namespace net
 {
     class Datagram;
+	
+#if defined ESYS_API_POSIX	
+	typedef int32_t TSocket;
+#elif defined ESYS_API_WIN32
+	typedef SOCKET TSocket;
+#endif	
     
     class UdpSocket
     {
@@ -103,7 +115,7 @@ namespace net
         UdpSocket& operator=(const UdpSocket& other); 
         
         /* Socket Descriptor */
-        int32_t m_socket;
+        TSocket m_socket;
         
         /* Socket connected flag */
         bool m_connected;

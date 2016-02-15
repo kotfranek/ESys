@@ -36,10 +36,9 @@
 namespace
 {
     void setThreadName( ::std::thread& object, const ::esys::TString31& name )
-    {
-        auto handle = object.native_handle();
+    {        
         #if defined (ESYS_API_POSIX)        
-        ::pthread_setname_np( handle, name.c_str() );           
+        ::pthread_setname_np( object.native_handle(), name.c_str() );           
         #elif defined (ESYS_API_WIN32)
         // Sorry, no windows implementation available
         #else
@@ -54,7 +53,7 @@ namespace
         #if defined (ESYS_API_POSIX)        
         ::pthread_setschedprio( handle, priority );
         #elif defined (ESYS_API_WIN32)
-        ::SetThreadPriority( handle, priority );
+        ::SetThreadPriority( (HANDLE) handle, priority );
         #else
             #error Not supported OS
         #endif         
