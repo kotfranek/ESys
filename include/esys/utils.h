@@ -66,7 +66,7 @@ namespace esys
         
         for( size_t i = 0U; i < sizeof( T ); i++ )
         {
-            variable += static_cast<uint8_t>( ( *( auxSrc + i ) >> ( 8U * i ) ) & 0xFF );
+            variable += T( *( auxSrc + i ) ) << ( 8U * i );
         }
         
         return sizeof( T );

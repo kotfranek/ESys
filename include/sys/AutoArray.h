@@ -172,6 +172,8 @@ namespace sys
     
     
     typedef AutoArray< uint8_t, 1024U> TByteBuffer1024;
+    
+    typedef AutoArray< uint8_t, 512U> TByteBuffer512;
 
 }; // namespace sys
 

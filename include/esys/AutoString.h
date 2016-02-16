@@ -265,6 +265,9 @@ namespace esys
     /* 63 8-bit Character String */
     typedef AutoString<char, 63U> TString63;
     
+    /* 127 8-bit Character String */
+    typedef AutoString<char, 127U> TString127;    
+    
     /* 255 8-bit Character String */
     typedef AutoString<char, 255U> TString255;
     
