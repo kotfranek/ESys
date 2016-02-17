@@ -81,10 +81,18 @@ public:
     
     /**
      * Make the current thread sleep for short time
+     * Milliseconds version.
      * @arg time in ms
      */
     static void sleep( const uint32_t time );
     
+    
+    /**
+     * Make the current thread sleep for short time.
+     * Microseconds version.
+     * @arg time in us
+     */
+    static void sleepUs( const uint32_t time );    
     
 protected:
     explicit AbstractThread( const ::esys::TString31& name ); 

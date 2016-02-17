@@ -161,6 +161,13 @@ void AbstractThread::sleep( const uint32_t time )
 }
 
 
+void AbstractThread::sleepUs( const uint32_t time ) 
+{
+    ::std::this_thread::sleep_for ( std::chrono::microseconds( time ) );
+}
+
+
+
 void AbstractThread::setPriority( const int32_t priority )
 {
     TLockMutex l( m_mutex );
