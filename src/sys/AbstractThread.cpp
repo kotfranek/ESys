@@ -118,9 +118,8 @@ void AbstractThread::threadBody()
         
         if ( isState( ThreadState_Running ) )
         {     
-            m_mutex.unlock();
+            TReverseMutexGuard r( m_mutex );
             run();        
-            m_mutex.lock();
         }
     }
     

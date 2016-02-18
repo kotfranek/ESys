@@ -23,34 +23,43 @@
  *
  */
 
-#ifndef SYS_TYPES_H__
-#define SYS_TYPES_H__
+/* 
+ * File:   reverse_guard.h
+ * Author: kret
+ *
+ * Created on February 18, 2016, 6:03 PM
+ */
 
-#include <mutex>
-#include "sys/ReverseMutexLock.h"
-
-#if defined (__linux__ ) || ( defined (__unix__) ) || (defined (__APPLE__))
-    #define ESYS_API_POSIX
-#elif defined ( _WIN32 )
-    #define ESYS_API_WIN32
-#endif
+#ifndef REVERSE_MUTEX_LOCK_H
+#define REVERSE_MUTEX_LOCK_H
 
 namespace sys
 {
-    /* Mutex Lock Guard */
-    typedef ::std::lock_guard<std::mutex> TLockMutex;
-    
-    /* Reverse Mutex Guard */
-    typedef ::sys::ReverseMutexLock<std::mutex> TReverseMutexGuard;
-    
-    /* Mutex Lock Guard (Unique) */
-    typedef ::std::unique_lock<std::mutex> TLockUnique; 
-    
-    /* Process Id */
-    typedef int32_t TPid;
-    
-    /* Time */
-    typedef int64_t TTime;
-};
+    /**
+     * Reverse Mutex Lock class
+     * Missing in C++11
+     */
+    template <class T> class ReverseMutexLock 
+    {
+    public:
+        ReverseMutexLock( T& mutex ) 
+            : m_mutex( mutex ) 
+        {
+            m_mutex.unlock();
+        }
 
-#endif // SYS_TYPES_H
+        ~ReverseMutexLock() 
+        {
+            m_mutex.lock();
+        }
+
+        ReverseMutexLock(const ReverseMutexLock&) = delete;
+        ReverseMutexLock& operator=(const ReverseMutexLock&) = delete;
+
+    private:
+        T& m_mutex;
+    };
+
+};
+#endif /* REVERSE_MUTEX_LOCK_H */
+
