@@ -26,7 +26,7 @@
 #ifndef UDPSOCKET_H
 #define UDPSOCKET_H
 
-#include "sys/ESysDefs.h"
+#include "sys/SysTypes.h"
 #include "net/NetTypes.h"
 #include "net/Address.h"
 

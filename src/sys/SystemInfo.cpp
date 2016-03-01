@@ -30,7 +30,7 @@
  * Created on February 13, 2016, 12:22 PM
  */
 
-#include "sys/ESysDefs.h"
+#include "sys/SysTypes.h"
 
 #if defined ESYS_API_POSIX
     #include <pthread.h>

@@ -33,7 +33,7 @@
 #ifndef SYSTEMINFO_H
 #define SYSTEMINFO_H
 
-#include "sys/ESysDefs.h"
+#include "sys/SysTypes.h"
 
 namespace sys
 {
