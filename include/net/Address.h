@@ -27,17 +27,12 @@
 #define NET_ADDRESS_H
 
 #include "esys/AutoString.h"
+#include "net/NetTypes.h"
 
 struct sockaddr_in;
 
 namespace net 
-{
-    /* Maximum length of the IPv6 address */
-    static const size_t IP6_ADDRESS_STRING_MAX_LENGTH = 46;
-    
-    /* IP String */
-    typedef ::esys::TString63 TStringIp;
-    
+{   
     class Address
     {
     public:
@@ -46,7 +41,7 @@ namespace net
          * @arg addr IPv4/IPv6 address as string
          * @arg port 16-bit Port Number
          */
-        explicit Address( const uint16_t port = 0U, const TStringIp& addr = "" );
+        explicit Address( const TPort port = 0U, const TStringIp& addr = "" );
         
         /**
          * Set the address based on the given sockaddr struct
@@ -71,7 +66,7 @@ namespace net
         /*
          * @result Port
          */
-        uint16_t getPort() const
+        TPort getPort() const
         {
             return m_port;
         }
@@ -92,7 +87,7 @@ namespace net
     private:
         
         /* Port Number */
-        uint16_t m_port;
+        TPort m_port;
         
         /* Address */
         TStringIp m_address;

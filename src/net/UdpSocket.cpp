@@ -87,7 +87,7 @@ UdpSocket::UdpSocket()
 }
 
 
-bool UdpSocket::open( const uint16_t port )
+bool UdpSocket::open( const TPort port )
 {
     bool result = false;
     const int32_t socketId = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP );

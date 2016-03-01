@@ -27,6 +27,7 @@
 #define UDPSOCKET_H
 
 #include "sys/ESysDefs.h"
+#include "net/NetTypes.h"
 #include "net/Address.h"
 
 #if defined ESYS_API_WIN32
@@ -55,7 +56,7 @@ namespace net
          * @arg port Port Number
          * @result true on success
          */
-        bool open( const uint16_t port );
+        bool open( const TPort port );
         
         
         /**

@@ -29,14 +29,12 @@
 #include <cstddef>
 #include <stdint.h>
 
+#include "net/NetTypes.h"
 #include "net/Address.h"
 #include "sys/AutoArray.h"
 
 namespace net
 {
-    /* Maximum Datagram length in bytes */
-    static const size_t MAX_UDP_DATAGRAM_LENGTH = 1408U;    
-    
     /* Datagram payload type */
     typedef ::sys::AutoArray<uint8_t, MAX_UDP_DATAGRAM_LENGTH> TDataGramBuffer;
     

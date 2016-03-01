@@ -23,53 +23,34 @@
  *
  */
 
-#include "net/Address.h"
-#include "esys/utils.h"
+/* 
+ * File:   NetTypes.h
+ * Author: kret
+ *
+ * Created on March 1, 2016, 8:27 PM
+ */
 
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#ifndef NETTYPES_H
+#define NETTYPES_H
+
+#include <cstddef>
+#include <stdint.h>
+#include "esys/AutoString.h"
 
 namespace net
-{
-
-Address::Address( const TPort port, const TStringIp& addr )
-    : m_port( port )
-    , m_address( addr )
-{
-
-}
-
-
-void Address::toSockAddr( sockaddr_in& addr ) const
-{
-    ::esys::zeroMem( addr );
+{ 
+    /* IP String */
+    typedef ::esys::TString63 TStringIp;
     
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons( m_port );
-    addr.sin_addr.s_addr = htonl( INADDR_ANY );
+    /* 16-bit Port Number */
+    typedef uint16_t TPort;    
+
+    /* Maximum length of the IPv6 address */
+    static const size_t IP6_ADDRESS_STRING_MAX_LENGTH = 46U;
     
-    if ( !m_address.empty() )
-    {
-        ::inet_aton( m_address.c_str(), &addr.sin_addr );    
-    }
-}
+    /* Maximum Datagram length in bytes */
+    static const size_t MAX_UDP_DATAGRAM_LENGTH = 1408U;     
+};
 
+#endif /* NETTYPES_H */
 
-void Address::fromSockAddr( const sockaddr_in& addr )
-{    
-    m_port = ntohs( addr.sin_port ); 
-    m_address.assign( ::inet_ntoa( addr.sin_addr ) );    
-}
-
-
-::esys::TString63 Address::toString() const 
-{
-    ::esys::TString63 result;
-    result.c_format( "%s:%u", m_address.c_str(), m_port );
-    
-    return result;
-}
-
-
-
-}; // namespace net
