@@ -2,10 +2,10 @@
 System framework suited for resource constrained embedded applications
 
 ## Features
-- simple application framework with OS signal support
+- simple application framework
+- no dynamic memory allocation, use the automatic/stack variables whenever possible
 - OOD multithreading abstraction layer
 - minimalistic UDP networking
-- reduce the heap usage to minimum, use the automatic/stack variables whenever possible
 - template based containers: Automatic Arrays and String stack-memory analogues
 - extends the generic C++11 implementation
 - posix and WinAPI compatible
